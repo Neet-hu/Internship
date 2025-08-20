@@ -1,0 +1,31 @@
+function solution(D) {
+    const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const result = {};
+    daysOfWeek.forEach(day => result[day] = 0);
+
+    function getDayOfWeek(dateStr) {
+        const date = new Date(dateStr);
+        const day = date.getDay();
+        return daysOfWeek[(day + 6) % 7];
+    }
+
+    for (const key in D) {
+        const dayStr = getDayOfWeek(key);
+        result[dayStr] += D[key];
+    }
+
+    for (let i = 0; i < daysOfWeek.length; i++) {
+        const day = daysOfWeek[i];
+        if (result[day] === 0) {
+            let prev = i - 1;
+            while (prev >= 0 && result[daysOfWeek[prev]] === 0) prev--;
+            let next = i + 1;
+            while (next < daysOfWeek.length && result[daysOfWeek[next]] === 0) next++;
+            const prevVal = prev >= 0 ? result[daysOfWeek[prev]] : 0;
+            const nextVal = next < daysOfWeek.length ? result[daysOfWeek[next]] : prevVal;
+            result[day] = Math.floor((prevVal + nextVal) / 2);
+        }
+    }
+
+    return result;
+}
